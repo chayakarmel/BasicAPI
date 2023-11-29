@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,10 +9,14 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class EventsController : ControllerBase
     {
-        private static List<Event> events = new List<Event> { new Event { Id = 1, Title = "default" }};
+        private static int id = 0;
+        private static List<Event> events = new List<Event> { 
+            new Event { Id = ++id, Title = "title1",Start= DateTime.Now}, 
+            new Event { Id = ++id, Title = "title2", Start = DateTime.Now }
+        };
 
-    // GET: api/<EventsController>
-    [HttpGet]
+        // GET: api/<EventsController>
+        [HttpGet]
         public IEnumerable<Event> Get()
         {
             return events;
@@ -23,9 +28,9 @@ namespace WebApplication1.Controllers
 
         //// GET api/<EventsController>/5
         //[HttpGet("{id}")]
-        //public string Get(int id)
+        //public Event Get(int id)
         //{
-        //    return "value";
+        //    return events.Find(e => e.Id == id);
         //}
 
         // POST api/<EventsController>
@@ -33,19 +38,27 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public void Post([FromBody] Event newEvent)
         {
-            events.Add(new Event { Id = 2, Title =newEvent.Title  }); 
+            
+            events.Add(new Event { Id = ++id, Title = newEvent.Title, Start = newEvent.Start, End = newEvent.End });
+
         }
 
         // PUT api/<EventsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] Event newEvent)
         {
+            Event temp=events.Find(e => e.Id == id);    
+            temp.Id=newEvent.Id;
+            temp.Title=newEvent.Title;
+            temp.Start = newEvent.Start;
         }
 
         // DELETE api/<EventsController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            Event temp = events.Find(e => e.Id == id);
+            events.Remove(temp);    
         }
     }
 }
