@@ -20,6 +20,7 @@ namespace WebApplication1.Controllers
         public IEnumerable<Event> Get()
         {
             return events;
+            
         }
         public EventsController()
         {
@@ -36,21 +37,22 @@ namespace WebApplication1.Controllers
         // POST api/<EventsController>
 
         [HttpPost]
-        public void Post([FromBody] Event newEvent)
+        public Event Post([FromBody] Event newEvent)
         {
             
-            events.Add(new Event { Id = ++id, Title = newEvent.Title, Start = newEvent.Start, End = newEvent.End });
-
+            events.Add(new Event { Id = ++id, Title = newEvent.Title, Start = newEvent.Start });
+            return newEvent;
         }
 
         // PUT api/<EventsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Event newEvent)
+        public Event Put(int id, [FromBody] Event newEvent)
         {
             Event temp=events.Find(e => e.Id == id);    
             temp.Id=newEvent.Id;
             temp.Title=newEvent.Title;
             temp.Start = newEvent.Start;
+            return newEvent;
         }
 
         // DELETE api/<EventsController>/5
